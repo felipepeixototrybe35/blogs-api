@@ -6,7 +6,7 @@ const userModel = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           autoIncrement: true
         },
-        display_name: DataTypes.STRING,
+        displayName: DataTypes.STRING,
         email: DataTypes.STRING,
         password: DataTypes.STRING,
         image: DataTypes.STRING
@@ -14,6 +14,7 @@ const userModel = (sequelize, DataTypes) => {
     {
       tableName: 'users',
       timestamps: false,
+      underscored: true,
     });
       return User;
     };

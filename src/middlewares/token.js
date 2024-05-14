@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const Token = (req, res) => {
+const Token = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -9,8 +9,10 @@ const Token = (req, res) => {
     }
 
     const token = jwt.sign({ user: email }, process.env.JWT_SECRET, { algorithm: 'HS256' });
-
-    res.status(200).json({ token });
+    const path = req.originalUrl.replace(/\?.*$/, '');
+    const status = path === '/login' ? 200 : 201;
+    
+    res.status(status).json({ token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
