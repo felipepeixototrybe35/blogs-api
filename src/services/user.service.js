@@ -1,4 +1,3 @@
-// const { userModel } = require('../models');
 const { User } = require('../models');
 
 const findUser = async ({ email, password }) => User
