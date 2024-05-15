@@ -13,16 +13,12 @@ const findAllCategories = async () => {
   return categories;
 }; 
 
-// const findIdUser = async (id) => {
-//   const user = await User
-//     .findOne({ where: { id }, attributes: { exclude: ['password'] } });
-//   return user;
-// };
+const findIdCategory = async (id) => Category.findByPk(id);
 
 module.exports = {
 //   findUser,
 //   findNameCategory,
   postCategory,
   findAllCategories,
-//   findIdUser,
+  findIdCategory,
 };
