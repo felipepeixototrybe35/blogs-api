@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
-// const { User } = require('../models');
-// const { usersService } = require('../services');
+const { usersService } = require('../services');
 
+// const secret = process.env.JWT_SECRET;
 const secret = process.env.JWT_SECRET || 'secretJWT';
 const extractToken = (bearerToken) => bearerToken.split(' ')[1];
 
-const verifyToken = async (req, res, next) => {
+const verifyToken2 = async (req, res, next) => {
   const bearerToken = req.header('Authorization');
   if (!bearerToken) {
     return res.status(401).json({ message: 'Token not found' });
@@ -13,8 +13,13 @@ const verifyToken = async (req, res, next) => {
   const token = extractToken(bearerToken);
   try {
     const decoded = jwt.verify(token, secret);
-    console.log('Decoded', decoded);
-    req.user = decoded.email;
+    const dataUser = { id: decoded.id, email: decoded.email };
+    const isUser = await usersService.findEmailUser(dataUser);
+
+    if (!isUser) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+    req.dataUser = dataUser;
     next();
   } catch (error) {
     console.log('erro', error);
@@ -22,4 +27,4 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-module.exports = { verifyToken };
+module.exports = { verifyToken2 };

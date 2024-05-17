@@ -1,9 +1,6 @@
 const { PostCategory } = require('../models');
 
-const postPostCategory = async ({ postId, categoryId }) => {
-  const post = await PostCategory.create({ postId, categoryId });
-
-  return post;
-};
+const postPostCategory = async ({ postId, categoryId }) => PostCategory
+  .create({ postId, categoryId });
 
 module.exports = { postPostCategory };

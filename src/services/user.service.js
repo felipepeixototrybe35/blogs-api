@@ -3,8 +3,10 @@ const { User } = require('../models');
 const findUser = async ({ email, password }) => User
   .findOne({ where: { email, password } });
 
-const findEmailUser = async ({ email }) => User
-  .findOne({ where: { email }, attributes: ['email'] });
+const findEmailUser = async ({ email }) => {
+  const user = await User.findOne({ where: { email }, attributes: ['email'] });
+  return user;
+};
 
 const postUser = async (body) => User.create(body);
 
