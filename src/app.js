@@ -1,23 +1,24 @@
 const express = require('express');
-const loginRoutes = require('./routes/login.route');
-const userRoutes = require('./routes/user.route');
-const categoryRoutes = require('./routes/category.route');
-const blogPostRoutes = require('./routes/blogPost.route');
+const loginRoute = require('./routes/loginRoute');
+const userRoutes = require('./routes/userRoutes');
+const postRoutes = require('./routes/postRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+
 // ...
 
 const app = express();
+
+app.use(express.json());
+
+app.use('/login', loginRoute);
+app.use('/user', userRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/post', postRoutes);
 
 // não remova ou mova esse endpoint
 app.get('/', (_request, response) => {
   response.send();
 });
-
-app.use(express.json());
-app.use('/login', loginRoutes);
-app.use('/user', userRoutes);
-app.use('/categories', categoryRoutes);
-app.use('/post', blogPostRoutes);
-// ...
 
 // É importante exportar a constante `app`,
 // para que possa ser utilizada pelo arquivo `src/server.js`

@@ -1,61 +1,53 @@
-const { blogPostsService, postCategoriesService } = require('../services');
+const PostService = require('../services/blogPost.service');
+const httpStatusMap = require('../utils/httpStatus');
 
-const postBlogPost = async (req, res) => {
-  // try {
-  //   const { body, user } = req;
-  //   console.log('User', user);
-  //   console.log(body);
-  //   const post = await blogPostsService
-  //     .postBlogPosts({ ...body, userId: user.id });
-
-  //   const categoryPromises = body.categoryIds.map((categoryId) => 
-  //     postCategoriesService.postPostCategory({ postId: post.id, categoryId }));
-  //   await Promise.all(categoryPromises);
-
-  //   res.status(201).json(post);
-  // } catch (error) {
-  //   res.status(500).json(error.message);
-  // }
+const findAllPosts = async (_req, res) => {
   try {
-    const { body, dataUser } = req;
-
-    const post = await blogPostsService.postBlogPosts({ ...body, userId: dataUser.id });
-
-    await Promise.all(body.categoryIds.map(async (category) => {
-      await postCategoriesService.postPostCategory({ postId: post.id, categoryId: category });
-    }));
-
-    res.status(201).json(post);
+    const { status, data } = await PostService.findAll();
+    return res.status(httpStatusMap[status]).json(data);
   } catch (error) {
-    res.status(500).json(error.message);
+    return res.status(500).json({ message: error.message });
   }
 };
 
-const getAllPosts = async (req, res) => {
+const findPostById = async (req, res) => {
+  const { id } = req.params;
   try {
-    const posts = await blogPostsService.getAllPosts();
-
-    res.status(200).json(posts);
+    const { status, data } = await PostService.findById(id);
+    return res.status(httpStatusMap[status]).json(data);
   } catch (error) {
-    res.status(500).json(error.message);
+    return res.status(500).json({ message: error.message });
   }
 };
 
-const getPostById = async (req, res) => {
+const createPost = async (req, res) => {
+  const { title, content, categoryIds } = req.body;
+  const { id } = req.user;
+
   try {
-    const { params } = req;
-    const post = await blogPostsService.getPostById(params);
-    if (!post) {
-      return res.status(404).json({ message: 'Post does not exist' });
-    }
-    res.status(200).json(post);
+    const { status, data } = await PostService.create(id, title, content, categoryIds);
+    return res.status(httpStatusMap[status]).json(data);
   } catch (error) {
-    res.status(500).json(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const updatePost = async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+  const { id: userId } = req.user;
+
+  try {
+    const { status, data } = await PostService.updatePost(userId, id, title, content);
+    return res.status(httpStatusMap[status]).json(data);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
 
 module.exports = {
-  postBlogPost,
-  getAllPosts,
-  getPostById,
+  findAllPosts,
+  findPostById,
+  createPost,
+  updatePost,
 };
